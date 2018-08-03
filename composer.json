@@ -1,0 +1,33 @@
+{
+  "name": "acelot/search-schema",
+  "description": "Declarative SQL search query builder for PHP 7",
+  "keywords": ["sql", "mysql", "postgresql", "search", "filter", "sort", "limit", "offset"],
+  "type": "library",
+  "homepage": "https://github.com/acelot/search-schema",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Valeriy Protopopov",
+      "email": "provaleriy@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Acelot\\SearchSchema\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Acelot\\SearchSchema\\Tests\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": "phpunit -c phpunit.xml"
+  }
+}
