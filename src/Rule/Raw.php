@@ -40,13 +40,25 @@ final class Raw implements RuleInterface
      */
     public function makeCriterion($value, ParamGeneratorInterface $paramGenerator): ?Criterion
     {
-        $params = [];
-
-        if (strpos($this->expression, ':value') !== false) {
-            $params[$paramGenerator->generate('raw')] = $value;
-            $this->expression = str_replace(':value', key($params), $this->expression);
+        if (strpos($this->expression, ':value') === false) {
+            return new Criterion($this->expression, []);
         }
 
-        return new Criterion($this->expression, $params);
+        $paramKey = $paramGenerator->generate('raw');
+
+        if (is_iterable($value)) {
+            if (count($value) === 0) {
+                return null;
+            }
+
+            $params = [];
+            foreach ($value as $i => $item) {
+                $params[$paramKey . '_' . $i] = $item;
+            }
+
+            return new Criterion(str_replace(':value', join(',', array_keys($params)), $this->expression), $params);
+        }
+
+        return new Criterion(str_replace(':value', $paramKey, $this->expression), [$paramKey => $value]);
     }
 }
