@@ -2,7 +2,7 @@
 
 namespace Acelot\SearchSchema;
 
-class Result
+class Criteria
 {
     /**
      * @var array

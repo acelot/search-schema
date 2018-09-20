@@ -52,9 +52,9 @@ class SearchSchema
      * @param array                        $terms
      * @param ParamGeneratorInterface|null $paramGenerator
      *
-     * @return Result
+     * @return Criteria
      */
-    public function build(array $terms, ParamGeneratorInterface $paramGenerator = null): Result
+    public function build(array $terms, ParamGeneratorInterface $paramGenerator = null): Criteria
     {
         if (!$paramGenerator) {
             $paramGenerator = new DefaultGenerator();
@@ -82,6 +82,6 @@ class SearchSchema
             $parts[$name] = join(' AND ', $parts[$name]);
         }
 
-        return new Result($parts, $params);
+        return new Criteria($parts, $params);
     }
 }
