@@ -14,21 +14,29 @@ final class Raw implements RuleInterface
     protected $expression;
 
     /**
+     * @var string
+     */
+    protected $paramPrefix;
+
+    /**
      * @param string $expression
+     * @param string $paramPrefix
      *
      * @return static
      */
-    public static function create(string $expression)
+    public static function create(string $expression, string $paramPrefix = 'raw')
     {
-        return new static($expression);
+        return new static($expression, $paramPrefix);
     }
 
     /**
      * @param string $expression
+     * @param string $paramPrefix
      */
-    public function __construct(string $expression)
+    public function __construct(string $expression, string $paramPrefix = 'raw')
     {
         $this->expression = $expression;
+        $this->paramPrefix = $paramPrefix;
     }
 
     /**
@@ -44,7 +52,7 @@ final class Raw implements RuleInterface
             return new Criterion($this->expression, []);
         }
 
-        $paramKey = $paramGenerator->generate('raw');
+        $paramKey = $paramGenerator->generate($this->paramPrefix);
 
         if (is_iterable($value)) {
             if (count($value) === 0) {
