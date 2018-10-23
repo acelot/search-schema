@@ -22,6 +22,14 @@ class SearchSchema
     }
 
     /**
+     * @return PartInterface[]
+     */
+    public function getParts(): array
+    {
+        return array_values($this->parts);
+    }
+
+    /**
      * @param PartInterface ...$parts
      *
      * @return SearchSchema
