@@ -4,10 +4,13 @@ namespace Acelot\SearchSchema\Rule;
 
 use Acelot\SearchSchema\Criterion;
 use Acelot\SearchSchema\ParamGeneratorInterface;
+use Acelot\SearchSchema\Rule\Traits\ValueConverter;
 use Acelot\SearchSchema\RuleInterface;
 
 final class Raw implements RuleInterface
 {
+    use ValueConverter;
+
     /**
      * @var string
      */
@@ -54,6 +57,8 @@ final class Raw implements RuleInterface
 
         $spread = $matches[1] === '...';
         $paramKey = $paramGenerator->generate($this->paramPrefix);
+
+        $value = $this->convert($value);
 
         if (is_iterable($value) && $spread) {
             if (count($value) === 0) {
