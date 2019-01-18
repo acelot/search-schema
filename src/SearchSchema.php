@@ -87,7 +87,11 @@ class SearchSchema
         }
 
         foreach (array_keys($parts) as $name) {
-            $parts[$name] = join(' AND ', $parts[$name]);
+ 	        if ($name === 'ORDER BY') {
+                $parts[$name] = join(' , ', $parts[$name]);
+            } else {
+                $parts[$name] = join(' AND ', $parts[$name]);
+            }
         }
 
         return new Criteria($parts, $params);
