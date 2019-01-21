@@ -51,27 +51,48 @@ final class Raw implements RuleInterface
      */
     public function makeCriterion($value, ParamGeneratorInterface $paramGenerator): ?Criterion
     {
-        if (!preg_match('/(\:|\.\.\.)value/', $this->expression, $matches)) {
-            return new Criterion($this->expression, []);
+        if (strpos($this->expression, ':value') !== false) {
+            return $this->makeScalarCriterion($value, $paramGenerator);
+        } elseif (is_iterable($value)) {
+            return $this->makeIterableCriterion($value, $paramGenerator);
         }
 
-        $spread = $matches[1] === '...';
+        return new Criterion($this->expression, []);
+    }
+
+    /**
+     * @param iterable $values
+     * @param ParamGeneratorInterface $paramGenerator
+     * @return Criterion|null
+     */
+    private function makeIterableCriterion(iterable $values, ParamGeneratorInterface $paramGenerator): ?Criterion
+    {
+        if (count($values) === 0) {
+            return null;
+        }
         $paramKey = $paramGenerator->generate($this->paramPrefix);
+        $values = $this->convert($values);
 
-        $value = $this->convert($value);
-
-        if (is_iterable($value) && $spread) {
-            if (count($value) === 0) {
-                return null;
-            }
-
-            $params = [];
-            foreach ($value as $i => $item) {
-                $params[$paramKey . '_' . $i] = $item;
-            }
-
-            return new Criterion(str_replace(':value', join(',', array_keys($params)), $this->expression), $params);
+        $params = [];
+        $expression = $this->expression;
+        foreach ($values as $key => $value) {
+            $bindKey = $paramKey . '_' . $key;
+            $params[$bindKey] = $value;
+            $expression = str_replace(":{$key}", $bindKey, $expression);
         }
+
+        return new Criterion($expression, $params);
+    }
+
+    /**
+     * @param mixed $value
+     * @param ParamGeneratorInterface $paramGenerator
+     * @return Criterion
+     */
+    private function makeScalarCriterion($value, ParamGeneratorInterface $paramGenerator): Criterion
+    {
+        $paramKey = $paramGenerator->generate($this->paramPrefix);
+        $value = $this->convert($value);
 
         return new Criterion(str_replace(':value', $paramKey, $this->expression), [$paramKey => $value]);
     }
