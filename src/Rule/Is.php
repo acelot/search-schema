@@ -6,6 +6,6 @@ final class Is extends AbstractSimpleRule
 {
     protected function getOperator(): string
     {
-        return 'IN';
+        return 'IS';
     }
 }
