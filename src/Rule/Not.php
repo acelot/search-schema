@@ -45,6 +45,8 @@ final class Not implements RuleInterface
         $value = $this->convert($value);
         $criterion = $this->rule->makeCriterion($value, $paramGenerator);
 
-        return new Criterion(sprintf('NOT (%s)', $criterion->getExpression()), $criterion->getParams());
+        return $criterion instanceof Criterion 
+            ? new Criterion(sprintf('NOT (%s)', $criterion->getExpression()), $criterion->getParams())
+            : null;
     }
 }
